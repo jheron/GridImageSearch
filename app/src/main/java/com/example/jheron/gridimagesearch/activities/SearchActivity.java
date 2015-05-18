@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import adapters.EndlessScrollListener;
 import adapters.ImageResultsAdapter;
 
 
@@ -31,6 +32,9 @@ public class SearchActivity extends ActionBarActivity {
     private GridView gvResults;
     private ArrayList<ImageResult> imageResults;
     private ImageResultsAdapter aImageResults;
+    private String query;
+    private String lastQuery = "";
+    private AsyncHttpClient client = new AsyncHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +43,7 @@ public class SearchActivity extends ActionBarActivity {
         setupViews();
         // creates data source to list
         imageResults = new ArrayList<ImageResult>();
-        // attaches data srouce to adapter
+        // attaches data source to adapter
         aImageResults = new ImageResultsAdapter(this, 1, imageResults);
         // link adapter to adapter view
         gvResults.setAdapter(aImageResults);
@@ -57,12 +61,43 @@ public class SearchActivity extends ActionBarActivity {
                 // get image result to display
                 ImageResult result = imageResults.get(position);
                 // pass image result into intent
-                i.putExtra("url",result.fullurl);
+                i.putExtra("result",result);
                 // launch the new activity
                 startActivity(i);
             }
         });
+        gvResults.setOnScrollListener(new EndlessScrollListener() {
+            @Override
+            public void onLoadMore(int position, int totalItemsCount) {
+                customLoadMoreDataFromApi(totalItemsCount);
+            }
+        });
     }
+
+    // Append more data into the adapter
+    public void customLoadMoreDataFromApi(int offset) {
+        // This method probably sends out a network request and appends new data items to your adapter.
+        // Use the offset value and add it as a parameter to your API request to retrieve paginated data.
+        // Deserialize API response and then construct new objects to append to the adapter
+        String searchurl = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + query + "&rsz=8";
+        client.get(searchurl, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("DEBUG", response.toString());
+                JSONArray imageResultsJson = null;
+                try {
+                    imageResultsJson = response.getJSONObject("responseData").getJSONArray("results");
+                    //imageResults.addAll(ImageResult.fromJSONArray(imageResultsJson));
+                    // When you make changes to the adapter, it does notify the underlying data
+                    aImageResults.addAll(ImageResult.fromJSONArray(imageResultsJson));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.d("INFO", imageResults.toString());
+            }
+        });
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -83,8 +118,8 @@ public class SearchActivity extends ActionBarActivity {
     //        responseData => results => [x] => url
 
     public void onImageSearch(View v) {
-        String query = etQuery.getText().toString();
-        AsyncHttpClient client = new AsyncHttpClient();
+        query = etQuery.getText().toString();
+        client = new AsyncHttpClient();
         // https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=android&rsz=8
         String searchurl = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=" + query + "&rsz=8";
         client.get(searchurl, new JsonHttpResponseHandler() {
@@ -94,7 +129,10 @@ public class SearchActivity extends ActionBarActivity {
                 JSONArray imageResultsJson = null;
                 try {
                     imageResultsJson = response.getJSONObject("responseData").getJSONArray("results");
-                    imageResults.clear(); // clear the existing images from the array (in cases where it's a new search)
+                    if (query != lastQuery) {
+                        imageResults.clear(); // clear the existing images from the array (in cases where it's a new search)
+                        lastQuery = query;
+                    }
                     //imageResults.addAll(ImageResult.fromJSONArray(imageResultsJson));
                     // When you make changes to the adapter, it does notify the underlying data
                     aImageResults.addAll(ImageResult.fromJSONArray(imageResultsJson));

@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.example.jheron.gridimagesearch.R;
+import com.example.jheron.gridimagesearch.models.ImageResult;
 import com.squareup.picasso.Picasso;
 
 
@@ -16,12 +17,14 @@ public class ImageDisplayActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_display);
+        // remove action bar from the ImageDisplayActivity
+        getSupportActionBar().hide();
         // pull out the url from the intent
-        String url = getIntent().getStringExtra("url");
+        ImageResult result = (ImageResult) getIntent().getSerializableExtra("result");
         // find the image view
         ImageView  ivImageResult = (ImageView) findViewById(R.id.ivImageResult);
         // load the image itno tthe image view via picasso
-        Picasso.with(this).load(url).into(ivImageResult);
+        Picasso.with(this).load(result.fullurl).into(ivImageResult);
     }
 
     @Override
