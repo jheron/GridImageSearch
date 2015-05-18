@@ -26,6 +26,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jheron.gridimagesearch.activities.SearchActivity" />
         </activity>
+        <activity
+            android:name=".activities.FilterActivity"
+            android:label="@string/title_activity_filter"
+            android:parentActivityName=".activities.SearchActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jheron.gridimagesearch.activities.SearchActivity" />
+        </activity>
     </application>
 
 </manifest>

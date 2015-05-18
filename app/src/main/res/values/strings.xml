@@ -8,4 +8,6 @@
     <string name="image_title_label">Image Title</string>
     <string name="image_view_description">Image Result</string>
     <string name="title_activity_image_display">Full Image</string>
+    <string name="title_activity_filter">Advanced Search Options</string>
+    <string name="filter_label">Advanced search options</string>
 </resources>

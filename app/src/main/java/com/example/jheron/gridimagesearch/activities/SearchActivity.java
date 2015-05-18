@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.example.jheron.gridimagesearch.R;
 import com.example.jheron.gridimagesearch.models.ImageResult;
@@ -147,18 +148,25 @@ public class SearchActivity extends ActionBarActivity {
         // Toast.makeText(this, "Search for: " + query, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item)
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
-        return super.onOptionsItemSelected(item);
+
+
+//        return super.onOptionsItemSelected(item);
+//    }
+
+    public void onFilterAction(MenuItem mi) {
+        Toast.makeText(this, "Filter!", Toast.LENGTH_SHORT).show();
+
     }
 }
